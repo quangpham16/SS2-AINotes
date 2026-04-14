@@ -9,6 +9,7 @@ const DocumentChunk = require('../../models/DocumentChunk');
 
 const SUPPORTED_MIME_TYPES = new Set([
   'application/pdf',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
   'text/plain',
 ]);
 
@@ -34,6 +35,20 @@ const loadPdfJs = async () => {
     getDocument: pdfjs.getDocument,
     version: pdfjs.version,
   };
+};
+
+const extractDocxText = async (fileBuffer) => {
+  try {
+    const { extractRawText } = await import('mammoth');
+    const result = await extractRawText({ buffer: fileBuffer });
+
+    return result.value || '';
+  } catch (error) {
+    throw new DocumentQaError(
+      'DOCX support is not installed on the server. Please install the `mammoth` package.',
+      500
+    );
+  }
 };
 
 class DocumentQaError extends Error {
@@ -137,7 +152,7 @@ const loadUserDocument = async ({ documentId, userId }) => {
 
   if (!SUPPORTED_MIME_TYPES.has(document.mimeType)) {
     throw new DocumentQaError(
-      'AI questions currently support PDF and TXT documents only.',
+      'AI questions currently support PDF, DOCX, and TXT documents only.',
       400
     );
   }
@@ -229,6 +244,13 @@ const extractDocumentText = async (document, fileBuffer) => {
     const docs = await loader.load();
 
     return docs.map((item) => item.pageContent).join('\n\n');
+  }
+
+  if (
+    document.mimeType ===
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+  ) {
+    return extractDocxText(fileBuffer);
   }
 
   return '';
