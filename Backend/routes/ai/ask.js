@@ -7,14 +7,19 @@ const router = express.Router();
 
 router.post('/', requireAuth, async (req, res) => {
   try {
-    const { documentId, question } = req.body || {};
+    const { documentId, documentIds, historyDocumentId, question } = req.body || {};
 
-    if (!documentId || !question) {
-      return res.status(400).json({ message: 'Please provide questions!' });
+    const hasDocuments =
+      (Array.isArray(documentIds) && documentIds.length > 0) || Boolean(documentId);
+
+    if (!hasDocuments || !question) {
+      return res.status(400).json({ message: 'Please provide at least one document and a question.' });
     }
 
     const answer = await askDocumentQuestion({
       documentId,
+      documentIds,
+      historyDocumentId,
       question,
       userId: req.user.userId,
     });

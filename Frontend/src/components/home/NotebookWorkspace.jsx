@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import AppHeader from './AppHeader';
+import DocumentCitationViewer from './DocumentCitationViewer';
 import NotesChatPanel from './NotesChatPanel';
 import NotesSourcesPanel from './NotesSourcesPanel';
-import NotesStudioPanel from './NotesStudioPanel';
 import NotesWorkspaceHeader from './NotesWorkspaceHeader';
 
 const API_BASE_URL = 'http://localhost:5000';
@@ -25,6 +25,8 @@ const NotebookWorkspace = ({
     activeDocument ? [activeDocument] : []
   );
   const [isSourcePickerOpen, setIsSourcePickerOpen] = useState(false);
+  const [documentTextCache, setDocumentTextCache] = useState({});
+  const [citationViewer, setCitationViewer] = useState(null);
 
   useEffect(() => {
     setQuestion('');
@@ -118,8 +120,6 @@ const NotebookWorkspace = ({
 
       return [...current, document];
     });
-
-    onSelectDocument(document);
   };
 
   const handleRemoveSource = (documentId) => {
@@ -167,8 +167,9 @@ const NotebookWorkspace = ({
   const handleAskAi = async () => {
     const trimmedQuestion = question.trim();
     const token = localStorage.getItem('ainotes_token');
+    const selectedDocumentIds = sourceDocuments.map((document) => document.id).filter(Boolean);
 
-    if (!activeDocument?.id || !trimmedQuestion || !token || isAsking) {
+    if (!activeDocument?.id || selectedDocumentIds.length === 0 || !trimmedQuestion || !token || isAsking) {
       return;
     }
 
@@ -190,6 +191,8 @@ const NotebookWorkspace = ({
         },
         body: JSON.stringify({
           documentId: activeDocument.id,
+          documentIds: selectedDocumentIds,
+          historyDocumentId: activeDocument.id,
           question: trimmedQuestion,
         }),
       });
@@ -214,6 +217,8 @@ const NotebookWorkspace = ({
         {
           role: 'assistant',
           content: data.answer || 'No answer returned.',
+          citations: Array.isArray(data.citations) ? data.citations : [],
+          answerSegments: Array.isArray(data.answerSegments) ? data.answerSegments : [],
         },
       ]);
     } catch (error) {
@@ -229,8 +234,70 @@ const NotebookWorkspace = ({
     }
   };
 
+  const handleOpenCitation = async (citation) => {
+    if (!citation?.documentId) {
+      return;
+    }
+
+    const token = localStorage.getItem('ainotes_token');
+    if (!token) {
+      return;
+    }
+
+    const cacheKey = String(citation.documentId);
+    const cachedText = documentTextCache[cacheKey];
+
+    if (cachedText) {
+      setCitationViewer({
+        ...cachedText,
+        citation,
+      });
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/documents/${citation.documentId}/text`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const responseText = await response.text();
+      const data = responseText ? JSON.parse(responseText) : {};
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Unable to open cited document.');
+      }
+
+      const viewerData = {
+        documentId: data.documentId,
+        documentName: data.documentName,
+        text: data.text || '',
+      };
+
+      setDocumentTextCache((current) => ({
+        ...current,
+        [cacheKey]: viewerData,
+      }));
+      setCitationViewer({
+        ...viewerData,
+        citation,
+      });
+    } catch (error) {
+      setMessages((current) => [
+        ...current,
+        {
+          role: 'assistant',
+          content: error.message || 'Unable to open cited document.',
+          citations: [],
+          answerSegments: [],
+        },
+      ]);
+    }
+  };
+
   return (
-    <div className="flex h-full flex-col px-5 py-5 text-white lg:px-6">
+    <div className="relative flex h-full min-h-0 flex-col overflow-hidden px-5 py-5 text-white lg:px-6">
       <NotesWorkspaceHeader
         title={activeDocument?.originalName}
         initials={initials}
@@ -241,7 +308,7 @@ const NotebookWorkspace = ({
         <AppHeader user={user} initials={initials} onLogout={onLogout} dark />
       </div>
 
-      <div className="grid min-h-0 flex-1 gap-4 xl:grid-cols-[300px_minmax(0,1fr)_340px]">
+      <div className="grid min-h-0 flex-1 gap-4 overflow-hidden lg:grid-cols-[300px_minmax(0,1fr)]">
         <NotesSourcesPanel
           sourceDocuments={sourceDocuments}
           availableDocuments={recentDocuments}
@@ -263,11 +330,15 @@ const NotebookWorkspace = ({
           question={question}
           onQuestionChange={setQuestion}
           onAskAi={handleAskAi}
+          onOpenCitation={handleOpenCitation}
           isAsking={isAsking}
         />
-
-        <NotesStudioPanel />
       </div>
+
+      <DocumentCitationViewer
+        viewer={citationViewer}
+        onClose={() => setCitationViewer(null)}
+      />
     </div>
   );
 };

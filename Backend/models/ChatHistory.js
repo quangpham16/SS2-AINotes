@@ -16,6 +16,95 @@ const chatMessageSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    citations: {
+      type: [
+        new mongoose.Schema(
+          {
+            documentId: {
+              type: mongoose.Schema.Types.ObjectId,
+              required: true,
+            },
+            documentName: {
+              type: String,
+              required: true,
+              trim: true,
+            },
+            chunkIndex: {
+              type: Number,
+              required: true,
+              min: 0,
+            },
+            excerpt: {
+              type: String,
+              required: true,
+              trim: true,
+            },
+            startChar: {
+              type: Number,
+              min: 0,
+            },
+            endChar: {
+              type: Number,
+              min: 0,
+            },
+          },
+          { _id: false }
+        ),
+      ],
+      default: undefined,
+    },
+    answerSegments: {
+      type: [
+        new mongoose.Schema(
+          {
+            text: {
+              type: String,
+              required: true,
+              trim: true,
+            },
+            citations: {
+              type: [
+                new mongoose.Schema(
+                  {
+                    documentId: {
+                      type: mongoose.Schema.Types.ObjectId,
+                      required: true,
+                    },
+                    documentName: {
+                      type: String,
+                      required: true,
+                      trim: true,
+                    },
+                    chunkIndex: {
+                      type: Number,
+                      required: true,
+                      min: 0,
+                    },
+                    excerpt: {
+                      type: String,
+                      required: true,
+                      trim: true,
+                    },
+                    startChar: {
+                      type: Number,
+                      min: 0,
+                    },
+                    endChar: {
+                      type: Number,
+                      min: 0,
+                    },
+                  },
+                  { _id: false }
+                ),
+              ],
+              default: undefined,
+            },
+          },
+          { _id: false }
+        ),
+      ],
+      default: undefined,
+    },
   },
   {
     _id: false,

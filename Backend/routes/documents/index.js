@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 const requireAuth = require('../../middleware/auth');
 const Document = require('../../models/Document');
+const { getDocumentTextView, DocumentQaError } = require('../../services/ai/documentQaService');
 
 const router = express.Router();
 
@@ -47,6 +48,28 @@ router.get('/:documentId/download', requireAuth, async (req, res) => {
   } catch (error) {
     console.error('Download document error:', error);
     return res.status(500).json({ message: 'Server error, unable to download document.' });
+  }
+});
+
+router.get('/:documentId/text', requireAuth, async (req, res) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.documentId)) {
+      return res.status(404).json({ message: 'Document not found.' });
+    }
+
+    const documentTextView = await getDocumentTextView({
+      documentId: req.params.documentId,
+      userId: req.user.userId,
+    });
+
+    return res.status(200).json(documentTextView);
+  } catch (error) {
+    if (error instanceof DocumentQaError) {
+      return res.status(error.statusCode).json({ message: error.message });
+    }
+
+    console.error('Fetch document text error:', error);
+    return res.status(500).json({ message: 'Server error, unable to read document text.' });
   }
 });
 

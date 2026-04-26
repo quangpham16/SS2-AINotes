@@ -54,16 +54,30 @@ const Home = ({ user, onLogout }) => {
   const renderMainContent = () => {
     if (isNotebookOpen) {
       return (
-        <NotebookWorkspace
-          user={user}
-          initials={initials}
-          onLogout={onLogout}
-          onUploadClick={() => setIsUploadModalOpen(true)}
-          recentDocuments={recentDocuments}
-          activeDocument={activeDocument}
-          onSelectDocument={handleSelectDocument}
-          documentsError={documentsError}
-        />
+        <div className="flex h-full min-h-0 flex-col overflow-hidden">
+          <div className="px-5 pt-5 lg:px-6">
+            <button
+              type="button"
+              onClick={() => handleSelectDocument(null)}
+              className="text-xs font-bold uppercase tracking-[0.4em] text-neutral-400 transition hover:text-white"
+            >
+              AINOTES
+            </button>
+          </div>
+
+          <div className="min-h-0 flex-1">
+            <NotebookWorkspace
+              user={user}
+              initials={initials}
+              onLogout={onLogout}
+              onUploadClick={() => setIsUploadModalOpen(true)}
+              recentDocuments={recentDocuments}
+              activeDocument={activeDocument}
+              onSelectDocument={handleSelectDocument}
+              documentsError={documentsError}
+            />
+          </div>
+        </div>
       );
     }
 
@@ -145,9 +159,10 @@ const Home = ({ user, onLogout }) => {
 
   return (
     <>
-      <div className="min-h-screen bg-white text-gray-900">
-        <div className="flex min-h-screen flex-col lg:flex-row">
-          <aside className="w-full border-b border-white/10 bg-black px-6 py-8 text-white lg:w-[290px] lg:border-b-0 lg:border-r lg:border-r-white/10">
+      <div className={`${isNotebookOpen ? 'h-screen overflow-hidden' : 'min-h-screen'} bg-white text-gray-900`}>
+        <div className={`flex ${isNotebookOpen ? 'h-screen overflow-hidden' : 'min-h-screen'} flex-col lg:flex-row`}>
+          {!isNotebookOpen && (
+            <aside className="w-full border-b border-white/10 bg-black px-6 py-8 text-white lg:w-[290px] lg:border-b-0 lg:border-r lg:border-r-white/10">
             <div className="flex items-center justify-between lg:block">
               <div>
                 <p className="text-xs font-bold uppercase tracking-[0.4em] text-neutral-400">AINOTES</p>
@@ -180,9 +195,10 @@ const Home = ({ user, onLogout }) => {
                 </NavLink>
               ))}
             </nav>
-          </aside>
+            </aside>
+          )}
 
-          <main className={`flex-1 overflow-hidden ${isNotebookOpen && hasDocuments ? 'bg-[#060606]' : 'bg-white'}`}>
+          <main className={`flex-1 ${isNotebookOpen ? 'h-full overflow-hidden' : 'overflow-hidden'} ${isNotebookOpen && hasDocuments ? 'bg-[#060606]' : 'bg-white'}`}>
             {renderMainContent()}
           </main>
         </div>

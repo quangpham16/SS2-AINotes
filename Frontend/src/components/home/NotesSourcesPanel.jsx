@@ -50,7 +50,7 @@ const NotesSourcesPanel = ({
     filteredSourceDocuments.length > 0 || filteredAddableDocuments.length > 0;
 
   return (
-    <section className="min-h-[680px] rounded-[28px] bg-[#111111]">
+    <section className="h-full min-h-0 overflow-y-auto rounded-[28px] bg-[#111111]">
       <div className="flex items-center justify-between border-b border-white/6 px-5 py-4">
         <h2 className="text-3xl">Sources</h2>
         <PanelLeft size={18} className="text-neutral-400" />
