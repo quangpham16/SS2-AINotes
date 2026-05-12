@@ -21,6 +21,10 @@ const hasFrontendBuild = fs.existsSync(frontendDistPath);
 
 app.use(cors());
 app.use(express.json());
+app.use(cors({
+  origin: 'https://ss-2-group6.vercel.app', 
+  credentials: true
+}));
 
 if (hasFrontendBuild) {
   app.use(express.static(frontendDistPath));
