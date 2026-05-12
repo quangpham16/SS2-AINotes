@@ -3,10 +3,12 @@
   "outputDirectory": "dist",
   "devCommand": "npm run dev",
   "cleanUrls": true,
-  "routes": [
+  
+  "rewrites": [
     {
-      "src": "^/(?!.*\\.).*$",
+      "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
 }
+  
