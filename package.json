@@ -1,0 +1,13 @@
+{
+  "name": "ainotes-app",
+  "private": true,
+  "workspaces": [
+    "Frontend",
+    "Backend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm -w Backend start\" \"npm -w Frontend dev\"",
+    "build": "npm -w Frontend build && npm -w Backend run build",
+    "start": "npm -w Backend start"
+  }
+}
