@@ -21,6 +21,7 @@ const hasFrontendBuild = fs.existsSync(frontendDistPath);
 const allowedOrigins = (process.env.FRONTEND_URL || process.env.CORS_ORIGIN || '')
   .split(',')
   .map((origin) => origin.trim())
+  .map((origin) => origin.replace(/\/+$/, ''))
   .filter(Boolean);
 const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI;
 
@@ -30,7 +31,9 @@ app.use(express.json());
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+    const normalizedOrigin = origin?.replace(/\/+$/, '');
+
+    if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(normalizedOrigin)) {
       callback(null, true);
       return;
     }
