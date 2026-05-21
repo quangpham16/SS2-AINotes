@@ -24,8 +24,9 @@ const GEMINI_EMBEDDING_MODEL =
   process.env.GEMINI_EMBEDDING_MODEL || 'gemini-embedding-001';
 const GEMINI_MAX_RETRIES = 3;
 const GEMINI_RETRY_DELAY_MS = 1200;
+const geminiApiKey = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY;
 const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
+  apiKey: geminiApiKey,
 });
 
 const loadPdfJs = async () => {
@@ -161,8 +162,8 @@ const validateAskInput = ({ documentIds, documentId, historyDocumentId, question
     throw new DocumentQaError('historyDocumentId must be valid.', 400);
   }
 
-  if (!process.env.GEMINI_API_KEY) {
-    throw new DocumentQaError('GEMINI_API_KEY is not configured.', 500);
+  if (!geminiApiKey) {
+    throw new DocumentQaError('GEMINI_API_KEY or GOOGLE_API_KEY is not configured.', 500);
   }
 
   return normalizedDocumentIds;

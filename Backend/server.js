@@ -18,11 +18,25 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const frontendDistPath = path.join(__dirname, '..', 'Frontend', 'dist');
 const hasFrontendBuild = fs.existsSync(frontendDistPath);
+const allowedOrigins = (process.env.FRONTEND_URL || process.env.CORS_ORIGIN || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+const mongoUri = process.env.MONGO_URI || process.env.MONGODB_URI;
 
-app.use(cors());
+let mongoConnectionPromise;
+
 app.use(express.json());
+
 app.use(cors({
-  origin: 'https://ss-2-group6.vercel.app', 
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+
+    callback(new Error('Not allowed by CORS'));
+  },
   credentials: true
 }));
 
@@ -36,6 +50,35 @@ app.get('/', (_req, res) => {
 
 app.get('/api/status', (_req, res) => {
   res.json({ message: 'API is ready' });
+});
+
+async function connectDatabase() {
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
+  }
+
+  if (!mongoUri) {
+    throw new Error('MONGO_URI or MONGODB_URI is not configured.');
+  }
+
+  if (!mongoConnectionPromise) {
+    mongoConnectionPromise = mongoose.connect(mongoUri).catch((error) => {
+      mongoConnectionPromise = undefined;
+      throw error;
+    });
+  }
+
+  return mongoConnectionPromise;
+}
+
+app.use('/api', async (_req, res, next) => {
+  try {
+    await connectDatabase();
+    next();
+  } catch (error) {
+    console.error('MongoDB connection failed:', error.message);
+    res.status(500).json({ message: 'Database connection failed.' });
+  }
 });
 
 app.use('/api/auth/register', registerRoute);
@@ -53,7 +96,7 @@ if (hasFrontendBuild) {
 
 async function startServer() {
   try {
-    await mongoose.connect(process.env.MONGO_URI);
+    await connectDatabase();
     console.log('MongoDB connected');
 
     app.listen(PORT, () => {
@@ -65,4 +108,8 @@ async function startServer() {
   }
 }
 
-startServer();
+if (require.main === module) {
+  startServer();
+}
+
+module.exports = app;

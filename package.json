@@ -7,7 +7,7 @@
   ],
   "scripts": {
     "dev": "concurrently \"npm -w Backend start\" \"npm -w Frontend dev\"",
-    "build": "npm -w Frontend build && npm -w Backend run build",
+    "build": "npm -w Frontend run build && npm -w Backend run build",
     "start": "npm -w Backend start"
   }
 }
