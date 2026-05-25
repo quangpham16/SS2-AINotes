@@ -48,10 +48,24 @@ const ensurePdfJsGeometryGlobals = () => {
   }
 };
 
+const loadPdfJsWorker = async () => {
+  try {
+    globalThis.pdfjsWorker = await import('pdfjs-dist/legacy/build/pdf.worker.mjs');
+  } catch (error) {
+    throw new DocumentQaError(
+      'PDF worker support is not available on this server. Ensure `pdfjs-dist/legacy/build/pdf.worker.mjs` is included in the deployment bundle.',
+      500
+    );
+  }
+};
+
 const loadPdfJs = async () => {
   ensurePdfJsGeometryGlobals();
 
-  const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
+  const [pdfjs] = await Promise.all([
+    import('pdfjs-dist/legacy/build/pdf.mjs'),
+    loadPdfJsWorker(),
+  ]);
 
   return {
     getDocument: pdfjs.getDocument,
