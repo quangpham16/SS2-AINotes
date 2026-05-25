@@ -29,7 +29,28 @@ const ai = new GoogleGenAI({
   apiKey: geminiApiKey,
 });
 
+const ensurePdfJsGeometryGlobals = () => {
+  if (globalThis.DOMMatrix) {
+    return;
+  }
+
+  try {
+    const { DOMMatrix, DOMPoint, DOMRect } = require('@napi-rs/canvas/geometry');
+
+    globalThis.DOMMatrix = DOMMatrix;
+    globalThis.DOMPoint ||= DOMPoint;
+    globalThis.DOMRect ||= DOMRect;
+  } catch (error) {
+    throw new DocumentQaError(
+      'PDF support is not available on this server. Please install `@napi-rs/canvas`.',
+      500
+    );
+  }
+};
+
 const loadPdfJs = async () => {
+  ensurePdfJsGeometryGlobals();
+
   const pdfjs = await import('pdfjs-dist/legacy/build/pdf.mjs');
 
   return {
