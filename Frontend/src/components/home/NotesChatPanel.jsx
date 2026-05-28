@@ -20,7 +20,7 @@ const renderAssistantSegments = (message, onOpenCitation) => {
                   key={`${citation.documentId}-${citation.chunkIndex}-${citationIndex}`}
                   type="button"
                   onClick={() => onOpenCitation?.(citation)}
-                  className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-white/10 bg-[#202020] px-2 text-[11px] font-semibold text-neutral-200 transition hover:border-white/20 hover:bg-[#282828] hover:text-white"
+                  className="inline-flex h-6 min-w-6 items-center justify-center rounded-full border border-neutral-200 bg-white px-2 text-[11px] font-semibold text-neutral-700 transition hover:border-neutral-300 hover:bg-neutral-50 hover:text-black"
                 >
                   [{citationIndex + 1}]
                 </button>
@@ -55,19 +55,19 @@ const NotesChatPanel = ({
   }, [messages, isLoadingHistory]);
 
   return (
-    <section className="flex h-[calc(100svh-2rem)] min-h-[560px] flex-col rounded-[24px] bg-[#111111] lg:h-full lg:min-h-0 lg:rounded-[28px]">
-      <div className="flex items-center justify-between border-b border-white/6 px-4 py-4 sm:px-5">
-        <h2 className="text-2xl sm:text-3xl">Chat</h2>
+    <section className="flex h-[calc(100svh-2rem)] min-h-[560px] flex-col rounded-[24px] border border-neutral-200 bg-white shadow-sm lg:h-full lg:min-h-0 lg:rounded-[28px]">
+      <div className="flex items-center justify-between border-b border-neutral-200 px-4 py-4 sm:px-5">
+        <h2 className="text-2xl text-black sm:text-3xl">Chat</h2>
         <button
           type="button"
-          className="rounded-full p-2 text-neutral-400 transition hover:bg-white/5 hover:text-white"
+          className="rounded-full p-2 text-neutral-500 transition hover:bg-neutral-100 hover:text-black"
         />
       </div>
 
       <div className="flex min-h-0 flex-1 flex-col px-4 py-4 sm:px-5 sm:py-5">
         <div className="min-h-0 flex-1 overflow-y-auto pr-1">
           {isLoadingHistory && (
-            <div className="rounded-[24px] bg-[#181818] px-4 py-3 text-sm text-neutral-400">
+            <div className="rounded-[24px] bg-neutral-100 px-4 py-3 text-sm text-neutral-500">
               Loading chat history...
             </div>
           )}
@@ -78,8 +78,8 @@ const NotesChatPanel = ({
                   key={`${message.role}-${index}`}
                   className={`max-w-[92%] rounded-[22px] px-4 py-3 text-sm leading-7 sm:max-w-[85%] sm:rounded-[24px] ${
                     message.role === 'user'
-                      ? 'ml-auto bg-white text-black'
-                      : 'bg-[#181818] text-neutral-200'
+                      ? 'ml-auto bg-[#e8f0fe] text-black'
+                      : 'bg-neutral-100 text-neutral-900'
                   }`}
                 >
                   {message.role === 'assistant' ? (
@@ -91,15 +91,15 @@ const NotesChatPanel = ({
                     !Array.isArray(message.answerSegments) &&
                     Array.isArray(message.citations) &&
                     message.citations.length > 0 && (
-                      <div className="mt-4 flex flex-wrap gap-2 border-t border-white/8 pt-3">
+                      <div className="mt-4 flex flex-wrap gap-2 border-t border-neutral-200 pt-3">
                         {message.citations.map((citation) => (
                           <button
                             key={`${citation.documentId}-${citation.chunkIndex}`}
                             type="button"
                             onClick={() => onOpenCitation?.(citation)}
-                            className="rounded-full border border-white/10 bg-[#202020] px-3 py-1.5 text-xs font-semibold text-neutral-200 transition hover:border-white/20 hover:bg-[#282828] hover:text-white"
+                            className="rounded-full border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 transition hover:border-neutral-300 hover:bg-neutral-50 hover:text-black"
                           >
-                            {citation.documentName} · chunk {Number(citation.chunkIndex) + 1}
+                            {citation.documentName} - chunk {Number(citation.chunkIndex) + 1}
                           </button>
                         ))}
                       </div>
@@ -111,7 +111,7 @@ const NotesChatPanel = ({
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="mt-4 shrink-0 rounded-[22px] border border-white/6 bg-[#181818] px-4 py-4 sm:mt-5 sm:rounded-[24px] sm:px-5">
+        <div className="mt-4 shrink-0 rounded-[22px] border border-neutral-200 bg-neutral-50 px-4 py-4 sm:mt-5 sm:rounded-[24px] sm:px-5">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="flex-1">
               <textarea
@@ -131,7 +131,7 @@ const NotesChatPanel = ({
                     : 'Select at least one document first...'
                 }
                 disabled={sourceCount === 0 || isAsking}
-                className="min-h-[88px] w-full resize-none bg-transparent text-base text-white outline-none placeholder:text-neutral-500 disabled:cursor-not-allowed disabled:text-neutral-500 sm:text-lg"
+                className="min-h-[88px] w-full resize-none bg-transparent text-base text-black outline-none placeholder:text-neutral-500 disabled:cursor-not-allowed disabled:text-neutral-400 sm:text-lg"
               />
               <p className="mt-2 text-xs text-neutral-500">
                 Press Enter to ask, Shift+Enter for a new line.
@@ -145,7 +145,7 @@ const NotesChatPanel = ({
                 type="button"
                 onClick={onAskAi}
                 disabled={!canAsk}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-black transition hover:bg-neutral-200 disabled:cursor-not-allowed disabled:bg-neutral-500 disabled:text-neutral-800 sm:w-auto"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-black px-5 py-3 text-sm font-semibold text-white transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:bg-neutral-200 disabled:text-neutral-400 sm:w-auto"
               >
                 <Share2 size={18} />
                 {isAsking ? 'Asking...' : 'Ask AI'}

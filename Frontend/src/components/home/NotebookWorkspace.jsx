@@ -307,7 +307,7 @@ const NotebookWorkspace = ({
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col px-4 py-4 text-white sm:px-5 sm:py-5 lg:h-full lg:min-h-0 lg:overflow-hidden lg:px-6">
+    <div className="relative flex min-h-screen flex-col bg-white px-4 py-4 text-gray-900 sm:px-5 sm:py-5 lg:h-full lg:min-h-0 lg:overflow-hidden lg:px-6">
       <NotesWorkspaceHeader
         title={activeDocument?.originalName}
         activeDocument={activeDocument}
@@ -322,7 +322,6 @@ const NotebookWorkspace = ({
           user={user}
           initials={initials}
           onLogout={onLogout}
-          dark
           searchValue={searchQuery}
           onSearchChange={onSearchQueryChange}
           searchResults={searchResults}

@@ -1,14 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Home as HomeIcon, Plus } from 'lucide-react';
-import { NavLink, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DocumentUploadModal from '../components/DocumentUploadModal';
+import AppLogoMark from '../components/home/AppLogoMark';
 import NotebookWorkspace from '../components/home/NotebookWorkspace';
 import NotebookActionModal from '../components/home/NotebookActionModal';
 import WelcomeHero from '../components/home/WelcomeHero';
-
-const navItems = [
-  { label: 'Dashboard', icon: HomeIcon, to: '/dashboard' },
-];
 
 const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000').replace(/\/+$/, '');
 
@@ -33,7 +29,6 @@ const Home = ({ user, onLogout }) => {
         .join('')
     : 'AI';
 
-  const hasDocuments = recentDocuments.length > 0;
   const isNotebookOpen = Boolean(activeDocument);
   const normalizedSearchQuery = searchQuery.trim().toLowerCase();
 
@@ -220,9 +215,10 @@ const Home = ({ user, onLogout }) => {
             <button
               type="button"
               onClick={() => handleSelectDocument(null)}
-              className="text-xs font-bold uppercase tracking-[0.4em] text-neutral-400 transition hover:text-white"
+              className="inline-flex items-center gap-2.5 text-black transition hover:text-neutral-600"
             >
-              AINOTES
+              <AppLogoMark className="h-7 w-7 text-black" />
+              <span className="text-2xl font-semibold leading-none">AINotes</span>
             </button>
           </div>
 
@@ -252,7 +248,6 @@ const Home = ({ user, onLogout }) => {
     return (
       <WelcomeHero
         user={user}
-        initials={initials}
         onLogout={onLogout}
         onUploadClick={() => setIsUploadModalOpen(true)}
         recentDocuments={recentDocuments}
@@ -335,49 +330,8 @@ const Home = ({ user, onLogout }) => {
   return (
     <>
       <div className={`${isNotebookOpen ? 'min-h-screen lg:h-screen lg:overflow-hidden' : 'min-h-screen'} bg-white text-gray-900`}>
-        <div className={`flex ${isNotebookOpen ? 'min-h-screen lg:h-screen lg:overflow-hidden' : 'min-h-screen'} flex-col lg:flex-row`}>
-          {!isNotebookOpen && (
-            <aside className="w-full border-b border-white/10 bg-black px-4 py-5 text-white sm:px-6 sm:py-8 lg:w-[290px] lg:border-b-0 lg:border-r lg:border-r-white/10">
-            <div className="flex flex-wrap items-center justify-between gap-4 lg:block">
-              <div>
-                <p className="text-xs font-bold uppercase tracking-[0.4em] text-neutral-400">AINOTES</p>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsUploadModalOpen(true)}
-                className="inline-flex items-center gap-3 rounded-xl bg-black px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-neutral-900"
-              >
-                <Plus size={16} />
-                New Note
-              </button>
-            </div>
-
-            <nav className="mt-5 space-y-2 sm:mt-8 lg:mt-12">
-              {navItems.map((item) => {
-                const Icon = item.icon;
-
-                return (
-                  <NavLink
-                    key={item.label}
-                    to={item.to}
-                    className={({ isActive }) =>
-                      `flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-semibold transition ${
-                        isActive
-                          ? 'bg-white text-black shadow-[0_18px_30px_rgba(255,255,255,0.08)]'
-                          : 'text-neutral-400 hover:bg-white/5 hover:text-white'
-                      }`
-                    }
-                  >
-                    <Icon size={18} />
-                    {item.label}
-                  </NavLink>
-                );
-              })}
-            </nav>
-            </aside>
-          )}
-
-          <main className={`flex-1 ${isNotebookOpen ? 'min-h-screen lg:h-full lg:overflow-hidden' : 'overflow-hidden'} ${isNotebookOpen && hasDocuments ? 'bg-[#060606]' : 'bg-white'}`}>
+        <div className={`${isNotebookOpen ? 'min-h-screen lg:h-screen lg:overflow-hidden' : 'min-h-screen'} flex-col`}>
+          <main className={`flex-1 ${isNotebookOpen ? 'min-h-screen bg-white lg:h-full lg:overflow-hidden' : 'overflow-hidden bg-white'}`}>
             {renderMainContent()}
           </main>
         </div>
