@@ -50,13 +50,13 @@ const NotesSourcesPanel = ({
     filteredSourceDocuments.length > 0 || filteredAddableDocuments.length > 0;
 
   return (
-    <section className="h-full min-h-0 overflow-y-auto rounded-[28px] bg-[#111111]">
-      <div className="flex items-center justify-between border-b border-white/6 px-5 py-4">
-        <h2 className="text-3xl">Sources</h2>
+    <section className="max-h-[460px] overflow-y-auto rounded-[24px] bg-[#111111] lg:h-full lg:max-h-none lg:min-h-0 lg:rounded-[28px]">
+      <div className="flex items-center justify-between border-b border-white/6 px-4 py-4 sm:px-5">
+        <h2 className="text-2xl sm:text-3xl">Sources</h2>
         <PanelLeft size={18} className="text-neutral-400" />
       </div>
 
-      <div className="space-y-5 px-5 py-5">
+      <div className="space-y-5 px-4 py-4 sm:px-5 sm:py-5">
         <label className="flex items-center gap-3 rounded-full border border-white/10 bg-[#1C1C1C] px-4 py-3 text-sm text-neutral-300 transition focus-within:border-white/20">
           <Search size={16} className="text-neutral-500" />
           <input
@@ -78,7 +78,7 @@ const NotesSourcesPanel = ({
           )}
         </label>
 
-        <div className="flex gap-3">
+        <div className="flex flex-col gap-3 sm:flex-row">
           <button
             type="button"
             onClick={onToggleSourcePicker}
@@ -126,7 +126,8 @@ const NotesSourcesPanel = ({
                 <button
                   type="button"
                   onClick={() => onRemoveSource(document.id)}
-                  className="rounded-full p-2 text-neutral-500 transition hover:bg-white/5 hover:text-white"
+                  className="shrink-0 rounded-full p-2 text-neutral-500 transition hover:bg-white/5 hover:text-white"
+                  aria-label={`Remove ${document.originalName || 'source'}`}
                 >
                   <X size={16} />
                 </button>

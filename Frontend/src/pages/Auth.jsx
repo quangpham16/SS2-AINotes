@@ -92,14 +92,14 @@ const Auth = ({ onAuthSuccess }) => {
         </div>
       </div>
 
-      <div className="flex w-full items-center justify-center bg-neutral-100 p-8 sm:p-12 md:w-1/2">
-        <div className="w-full max-w-md rounded-3xl border border-neutral-200 bg-white p-8 shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 sm:p-10">
-          <div className="text-center mb-10">
-            <h1 className="mb-4 text-4xl font-extrabold text-black md:hidden">AINOTES</h1>
-            <h2 className="mb-2 text-3xl font-bold text-black">
+      <div className="flex w-full items-center justify-center bg-neutral-100 p-4 sm:p-8 md:w-1/2 lg:p-12">
+        <div className="w-full max-w-md rounded-[24px] border border-neutral-200 bg-white p-5 shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 sm:rounded-3xl sm:p-8 lg:p-10">
+          <div className="mb-8 text-center sm:mb-10">
+            <h1 className="mb-4 text-3xl font-extrabold text-black sm:text-4xl md:hidden">AINOTES</h1>
+            <h2 className="mb-2 text-2xl font-bold text-black sm:text-3xl">
               {isLogin ? 'Welcome to AINotes!' : 'Create an account'}
             </h2>
-            <p className="mt-2 font-medium text-neutral-500">
+            <p className="mt-2 text-sm font-medium text-neutral-500 sm:text-base">
               {isLogin ? 'Please sign in to continue' : 'Start your journey with AINOTES today'}
             </p>
           </div>

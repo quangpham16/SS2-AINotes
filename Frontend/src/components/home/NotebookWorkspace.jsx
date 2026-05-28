@@ -16,6 +16,13 @@ const NotebookWorkspace = ({
   recentDocuments,
   activeDocument,
   onSelectDocument,
+  searchQuery,
+  onSearchQueryChange,
+  searchResults,
+  onSearchResultSelect,
+  onSearchSubmit,
+  onRenameDocument,
+  onDeleteDocument,
 }) => {
   const [messages, setMessages] = useState([]);
   const [question, setQuestion] = useState('');
@@ -92,9 +99,12 @@ const NotebookWorkspace = ({
 
   useEffect(() => {
     setSourceDocuments((current) => {
-      const validCurrentSources = current.filter((source) =>
-        recentDocuments.some((document) => document.id === source.id)
+      const documentsById = new Map(
+        recentDocuments.map((document) => [String(document.id), document])
       );
+      const validCurrentSources = current
+        .map((source) => documentsById.get(String(source.id)))
+        .filter(Boolean);
 
       if (!activeDocument) {
         return validCurrentSources;
@@ -297,18 +307,31 @@ const NotebookWorkspace = ({
   };
 
   return (
-    <div className="relative flex h-full min-h-0 flex-col overflow-hidden px-5 py-5 text-white lg:px-6">
+    <div className="relative flex min-h-screen flex-col px-4 py-4 text-white sm:px-5 sm:py-5 lg:h-full lg:min-h-0 lg:overflow-hidden lg:px-6">
       <NotesWorkspaceHeader
         title={activeDocument?.originalName}
+        activeDocument={activeDocument}
         initials={initials}
         onUploadClick={onUploadClick}
+        onRenameDocument={onRenameDocument}
+        onDeleteDocument={onDeleteDocument}
       />
 
       <div className="mb-5">
-        <AppHeader user={user} initials={initials} onLogout={onLogout} dark />
+        <AppHeader
+          user={user}
+          initials={initials}
+          onLogout={onLogout}
+          dark
+          searchValue={searchQuery}
+          onSearchChange={onSearchQueryChange}
+          searchResults={searchResults}
+          onSearchResultSelect={onSearchResultSelect}
+          onSearchSubmit={onSearchSubmit}
+        />
       </div>
 
-      <div className="grid min-h-0 flex-1 gap-4 overflow-hidden lg:grid-cols-[300px_minmax(0,1fr)]">
+      <div className="flex flex-1 flex-col gap-4 lg:grid lg:min-h-0 lg:overflow-hidden lg:grid-cols-[300px_minmax(0,1fr)]">
         <NotesSourcesPanel
           sourceDocuments={sourceDocuments}
           availableDocuments={recentDocuments}

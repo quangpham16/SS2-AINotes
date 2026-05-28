@@ -91,12 +91,12 @@ const DocumentUploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/45 px-4 py-8 backdrop-blur-sm">
-      <div className="w-full max-w-2xl overflow-hidden rounded-[32px] border border-white/10 bg-[#101010] text-white shadow-[0_30px_80px_rgba(0,0,0,0.45)]">
-        <div className="flex items-start justify-between border-b border-white/10 px-6 py-5 sm:px-8">
-          <div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-950/45 px-4 py-4 backdrop-blur-sm sm:py-8">
+      <div className="max-h-[calc(100svh-2rem)] w-full max-w-2xl overflow-y-auto rounded-[24px] border border-white/10 bg-[#101010] text-white shadow-[0_30px_80px_rgba(0,0,0,0.45)] sm:rounded-[32px]">
+        <div className="flex items-start justify-between gap-4 border-b border-white/10 px-5 py-5 sm:px-8">
+          <div className="min-w-0">
             <p className="text-xs font-bold uppercase tracking-[0.35em] text-neutral-400">New Note</p>
-            <h2 className="mt-2 text-2xl font-bold text-white">Upload a document</h2>
+            <h2 className="mt-2 text-xl font-bold text-white sm:text-2xl">Upload a document</h2>
             <p className="mt-2 text-sm leading-6 text-neutral-400">
               Choose a PDF, DOC, DOCX, or TXT file. The backend accepts files up to 10MB.
             </p>
@@ -111,9 +111,9 @@ const DocumentUploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
           </button>
         </div>
 
-        <div className="space-y-5 px-6 py-6 sm:px-8 sm:py-8">
-          <label className="flex cursor-pointer items-center justify-between gap-4 rounded-3xl border border-dashed border-white/20 bg-[#181818] px-5 py-5 transition hover:border-white/40">
-            <div className="min-w-0">
+        <div className="space-y-5 px-5 py-6 sm:px-8 sm:py-8">
+          <label className="flex cursor-pointer flex-col items-start justify-between gap-4 rounded-3xl border border-dashed border-white/20 bg-[#181818] px-5 py-5 transition hover:border-white/40 sm:flex-row sm:items-center">
+            <div className="min-w-0 flex-1">
               <p className="text-sm font-semibold text-white">
                 {selectedFile ? selectedFile.name : 'Choose a document'}
               </p>

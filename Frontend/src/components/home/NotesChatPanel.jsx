@@ -55,16 +55,16 @@ const NotesChatPanel = ({
   }, [messages, isLoadingHistory]);
 
   return (
-    <section className="flex h-full min-h-0 flex-col rounded-[28px] bg-[#111111]">
-      <div className="flex items-center justify-between border-b border-white/6 px-5 py-4">
-        <h2 className="text-3xl">Chat</h2>
+    <section className="flex h-[calc(100svh-2rem)] min-h-[560px] flex-col rounded-[24px] bg-[#111111] lg:h-full lg:min-h-0 lg:rounded-[28px]">
+      <div className="flex items-center justify-between border-b border-white/6 px-4 py-4 sm:px-5">
+        <h2 className="text-2xl sm:text-3xl">Chat</h2>
         <button
           type="button"
           className="rounded-full p-2 text-neutral-400 transition hover:bg-white/5 hover:text-white"
         />
       </div>
 
-      <div className="flex min-h-0 flex-1 flex-col px-5 py-5">
+      <div className="flex min-h-0 flex-1 flex-col px-4 py-4 sm:px-5 sm:py-5">
         <div className="min-h-0 flex-1 overflow-y-auto pr-1">
           {isLoadingHistory && (
             <div className="rounded-[24px] bg-[#181818] px-4 py-3 text-sm text-neutral-400">
@@ -76,7 +76,7 @@ const NotesChatPanel = ({
               {messages.map((message, index) => (
                 <div
                   key={`${message.role}-${index}`}
-                  className={`max-w-[85%] rounded-[24px] px-4 py-3 text-sm leading-7 ${
+                  className={`max-w-[92%] rounded-[22px] px-4 py-3 text-sm leading-7 sm:max-w-[85%] sm:rounded-[24px] ${
                     message.role === 'user'
                       ? 'ml-auto bg-white text-black'
                       : 'bg-[#181818] text-neutral-200'
@@ -111,8 +111,8 @@ const NotesChatPanel = ({
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="mt-5 shrink-0 rounded-[24px] border border-white/6 bg-[#181818] px-5 py-4">
-          <div className="flex items-end justify-between gap-4">
+        <div className="mt-4 shrink-0 rounded-[22px] border border-white/6 bg-[#181818] px-4 py-4 sm:mt-5 sm:rounded-[24px] sm:px-5">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div className="flex-1">
               <textarea
                 value={question}
@@ -131,13 +131,13 @@ const NotesChatPanel = ({
                     : 'Select at least one document first...'
                 }
                 disabled={sourceCount === 0 || isAsking}
-                className="min-h-[88px] w-full resize-none bg-transparent text-lg text-white outline-none placeholder:text-neutral-500 disabled:cursor-not-allowed disabled:text-neutral-500"
+                className="min-h-[88px] w-full resize-none bg-transparent text-base text-white outline-none placeholder:text-neutral-500 disabled:cursor-not-allowed disabled:text-neutral-500 sm:text-lg"
               />
               <p className="mt-2 text-xs text-neutral-500">
                 Press Enter to ask, Shift+Enter for a new line.
               </p>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
               <span className="text-sm text-neutral-500">
                 {sourceCount} source{sourceCount === 1 ? '' : 's'}
               </span>
@@ -145,7 +145,7 @@ const NotesChatPanel = ({
                 type="button"
                 onClick={onAskAi}
                 disabled={!canAsk}
-                className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-black transition hover:bg-neutral-200 disabled:cursor-not-allowed disabled:bg-neutral-500 disabled:text-neutral-800"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-white px-5 py-3 text-sm font-semibold text-black transition hover:bg-neutral-200 disabled:cursor-not-allowed disabled:bg-neutral-500 disabled:text-neutral-800 sm:w-auto"
               >
                 <Share2 size={18} />
                 {isAsking ? 'Asking...' : 'Ask AI'}
